@@ -10,38 +10,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repo
       - name: Checkout
         uses: actions/checkout@v3
 
-      # Setup Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0' # latest stable
+          flutter-version: '3.24.0'
 
-      # Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # Build Flutter web release (creates build/web/index.html)
       - name: Build Web
         run: flutter build web --release
 
-      # Install Firebase CLI
       - name: Install Firebase Tools
         run: npm install -g firebase-tools
 
-      # Debug Firebase CLI
       - name: Check Firebase CLI Version
         run: firebase --version
 
-      # Deploy to Firebase Hosting using service account JSON
+      - name: Write Firebase Service Account
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > $HOME/firebase-key.json
+
       - name: Deploy to Firebase Hosting
         env:
-          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        run: |
-          echo "$FIREBASE_SERVICE_ACCOUNT" > ${HOME}/firebase-key.json
-          firebase deploy --only hosting \
-            --project trendawy-flutter \
-            --token "$(cat ${HOME}/firebase-key.json)"
+          GOOGLE_APPLICATION_CREDENTIALS: $HOME/firebase-key.json
+        run: firebase deploy --only hosting --project trendawy-flutter
