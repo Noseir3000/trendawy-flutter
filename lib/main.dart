@@ -10,7 +10,7 @@ class TrendawyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Trendawy',
+      title: 'Trendawy Flutter',
       theme: ThemeData.dark(),
       home: const Scaffold(
         body: Center(
